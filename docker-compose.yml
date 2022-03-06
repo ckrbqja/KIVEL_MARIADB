@@ -1,19 +1,14 @@
-version: '3'
+version: "3"
 services:
-    netjs:
-        build:
-            context: .
-            dockerfile: dockerfile.dev
+    mariadb:
+        build: ./mariadb
+        restart: unless-stopped
+        container_name: app_mariadb
         ports:
-            - '3000:3000'
+            - "3411:3306"
         volumes:
-            - /usr/src/app/node_modules
-            - ./:/usr/src/app
-    tests:
-        build:
-            context: .
-            dockerfile: dockerfile.dev
-        volumes:
-            - /usr/src/app/node_modules
-            - ./:/usr/src/app
-        command: ['npm', 'run', 'test']
+            - ./mariadb/mariadb_data:/var/lib/mysql
+            - ./mariadb/sqls/:/docker-entrypoint-initdb.d/
+        environment:
+            MYSQL_ROOT_PASSWORD: st123
+            MYSQL_DATABASE: sotong
